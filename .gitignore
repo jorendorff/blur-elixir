@@ -19,4 +19,8 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
+# Rustler build artifact.
 priv/native/*.so
+
+# Output of the sample program.
+blurry-*.png
