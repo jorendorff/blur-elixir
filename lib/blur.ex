@@ -3,16 +3,9 @@ defmodule Blur do
   Documentation for Blur.
   """
 
-  @doc """
-  Hello world.
+  use Rustler, otp_app: :blur
 
-  ## Examples
-
-      iex> Blur.hello
-      :world
-
-  """
-  def hello do
-    :world
-  end
+  def open(_filename),         do: :erlang.nif_error(:nif_not_loaded)
+  def save(_filename, _image), do: :erlang.nif_error(:nif_not_loaded)
+  def blur(_image),            do: :erlang.nif_error(:nif_not_loaded)
 end
