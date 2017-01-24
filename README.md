@@ -24,3 +24,8 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/blur](https://hexdocs.pm/blur).
 
+
+## Credits
+
+Thanks to photographer [Adam Simmons](https://www.flickr.com/photos/mr-numb/28648419472/)
+for contributing [nashville.jpg](nashville.jpg) to the Creative Commons.
