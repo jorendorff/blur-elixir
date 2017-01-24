@@ -2,16 +2,15 @@
 #[macro_use] extern crate lazy_static;
 extern crate image;
 
+use std::error::Error;
 use rustler::{NifEnv, NifTerm, NifResult, NifEncoder};
 use rustler::resource::ResourceCell;
-use image::DynamicImage;
+use image::{DynamicImage, GenericImage};
 
 mod atoms {
     rustler_atoms! {
         atom ok;
-        //atom error;
-        //atom __true__ = "true";
-        //atom __false__ = "false";
+        atom error;
     }
 }
 
@@ -32,22 +31,39 @@ fn load<'a>(env: NifEnv<'a>, _load_data: NifTerm<'a>) -> bool {
     true
 }
 
+fn fail<'a>(env: NifEnv<'a>, error: &Error) -> NifResult<NifTerm<'a>> {
+    Ok((atoms::error(), error.description().encode(env)).encode(env))
+}
+
 // open/1 (filename) -> {:ok, image}
 fn open<'a>(env: NifEnv<'a>, args: &Vec<NifTerm<'a>>) -> NifResult<NifTerm<'a>> {
     let filename: String = args[0].decode()?;
-    Ok(atoms::ok().encode(env))
+    match image::open(filename) {
+        Ok(dynamic_image) =>
+            Ok(ResourceCell::new(Image(dynamic_image)).encode(env)),
+        Err(image_err) =>
+            fail(env, &image_err)
+    }
 }
 
 // save/2 (image, filename) -> :ok
 fn save<'a>(env: NifEnv<'a>, args: &Vec<NifTerm<'a>>) -> NifResult<NifTerm<'a>> {
-    let image: ResourceCell<Image> = args[0].decode()?;
+    let image_arg: ResourceCell<Image> = args[0].decode()?;
     let filename: String = args[1].decode()?;
-    Ok(atoms::ok().encode(env))
+
+    let img = &image_arg.0;
+    match image::save_buffer(filename, &img.raw_pixels(), img.width(), img.height(), img.color()) {
+        Ok(()) =>
+            Ok(atoms::ok().encode(env)),
+        Err(image_err) =>
+            fail(env, &image_err)
+    }
 }
 
 // blur/1 (image) -> image
 fn blur<'a>(env: NifEnv<'a>, args: &Vec<NifTerm<'a>>) -> NifResult<NifTerm<'a>> {
     let image: ResourceCell<Image> = args[0].decode()?;
-    Ok(atoms::ok().encode(env))
+    let blurred = image.0.blur(7.0);
+    Ok(ResourceCell::new(Image(blurred)).encode(env))
 }
 
