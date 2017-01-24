@@ -1,6 +1,13 @@
 # Blur
 
-**TODO: Add description**
+I threw this together as an example of how to use
+[Rustler](https://github.com/hansihe/Rustler/) to extend Erlang/Elixir with Rust code.
+
+It took two hours to make, plus a half hour for a nice
+[demo program](example/smear.exs).
+Once the Rust code compiled, it worked, and I didn't change it again.
+Pretty great!
+
 
 ## Installation
 
